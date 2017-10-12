@@ -154,7 +154,10 @@ public class Es5Sink extends AbstractSink implements Configurable {
         List<String> list = indexData.get(key);
         if (list == null) {
             list = Collections.synchronizedList(new LinkedList<String>());
-            indexData.put(key, list);
+            List<String> oldList = indexData.putIfAbsent(key, list);
+            if (oldList != null) {
+                list = oldList;
+            }
         }
 
         list.add(json);
